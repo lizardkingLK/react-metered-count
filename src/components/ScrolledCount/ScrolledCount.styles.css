@@ -1,0 +1,26 @@
+.root {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+}
+
+.compartment {
+    display: flex;
+}
+
+.container {
+    place-self: center;
+    overflow-y: scroll;
+}
+
+.container::-webkit-scrollbar {
+    display: none;
+}
+
+.item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "Roboto Mono", sans-serif;
+}
