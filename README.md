@@ -1,27 +1,44 @@
-# React Count Until
+# React Metered Count
 
-Count down until the given time
+Count goes up
 
 ## Installation
 
-Install react-countdown-until with npm
+Install react-metered-count with npm
 
 ```bash
-  npm install react-countdown-until
+  npm install react-metered-count
 ```
 
 ## Usage/Examples
 
 ```javascript
-import CountDown from "react-countdown-until";
+import React, { useEffect, useState } from "react";
+import ScrolledCount from "react-metered-count";
 
 function App() {
+  const [count, setCount] = useState(0);
+
+  // Your count state change logic here
+  // example snippet below.
+  // This increments the count by 1
+  // every 1000 milliseconds
+  useEffect(() => {
+    const timerReference = setInterval(() => {
+      setCount((prev) => prev + 1);
+    }, 1000);
+
+    return () => {
+      clearInterval(timerReference);
+    };
+  }, []);
+
   return (
     <>
-      {/* returns in format yyy:MM:dd:HH:mm:ss */}
-      <CountUntil />
+      {/* returns in format 0 */}
+      <ScrolledCount />
       {/* or */}
-      <CountUntil date={new Date("2025-01-01")} />
+      <ScrolledCount fontSize={36} separator={"_"} count={count} />
     </>
   );
 }
@@ -29,18 +46,11 @@ function App() {
 
 ## API Reference
 
-| Parameter        | Type      | Description                                 | Default            |
-| :--------------- | :-------- | :------------------------------------------ | :----------------- |
-| `date`           | `Date`    | **Optional**. A future Date object          | `null`             |
-| `className`      | `string`  | **Optional**. Class names for root div      | `'flex font-mono'` |
-| `requireLabels`  | `boolean` | **Optional**. Display locales as labels     | `false`            |
-| `seperator`      | `string`  | **Optional**. Seperator between timer parts | `':'`              |
-| `displayYears`   | `boolean` | **Optional**. To display years part         | `true`             |
-| `displayMonths`  | `boolean` | **Optional**. To display months part        | `true`             |
-| `displaydays`    | `boolean` | **Optional**. To display days part          | `true`             |
-| `displayHours`   | `boolean` | **Optional**. To display hours part         | `true`             |
-| `displayMinutes` | `boolean` | **Optional**. To display minutes part       | `true`             |
-| `displaySeconds` | `boolean` | **Optional**. To display seconds part       | `true`             |
+| Parameter   | Type     | Description                                    | Default |
+| :---------- | :------- | :--------------------------------------------- | :------ |
+| `fontSize`  | `number` | **Optional**. font size of count               | `80`    |
+| `separator` | `string` | **Optional**. Separator between three digits   | `','`   |
+| `count`     | `number` | **Optional**. The count to increment & display | `0`     |
 
 ## Authors
 

@@ -15,6 +15,16 @@ import {
 } from "./ScrolledCount.styles";
 import { ContainerProps, ScrolledCountProps } from "./ScrolledCount.types";
 
+/**
+ * Renders Scrolled Count Component
+ *
+ * @remarks
+ * This component is part of the {@link ScrolledCount}.
+ *
+ * @param props - Scrolled Count Properties {@link ScrolledCountProps}
+ * @returns component to render
+ *
+ */
 function ScrolledCount({
   count = 0,
   fontSize = 80,
