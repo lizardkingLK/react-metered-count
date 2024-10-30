@@ -1,20 +1,27 @@
-import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
-import { peerDependencies } from "./package.json";
+import path from "path";
+import react from "@vitejs/plugin-react";
+import { defineConfig, UserConfig } from "vite";
 
 export default defineConfig({
+  base: "./",
+  plugins: [dts({ rollupTypes: true }), react()],
   build: {
+    sourcemap: true,
     lib: {
-      entry: "./src/index.ts",
+      entry: path.resolve(__dirname, "src/index.ts"),
       name: "react-metered-count",
+      formats: ["es", "cjs", "umd", "iife"],
       fileName: (format) => `index.${format}.js`,
-      formats: ["cjs", "es"],
     },
     rollupOptions: {
-      external: [...Object.keys(peerDependencies)],
+      external: ["react", "react-dom"],
+      output: {
+        globals: {
+          react: "React",
+          "react-dom": "ReactDOM",
+        },
+      },
     },
-    sourcemap: true,
-    emptyOutDir: true,
   },
-  plugins: [dts()],
-});
+} satisfies UserConfig);
