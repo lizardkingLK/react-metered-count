@@ -1,7 +1,6 @@
-"use client";
-
-import React, {
+import {
   createRef,
+  MutableRefObject,
   useCallback,
   useEffect,
   useRef,
@@ -31,74 +30,90 @@ function ScrolledCount({
   separator = ",",
 }: ScrolledCountProps) {
   const containerRefs = useRef([]);
-  const [tempContainers, setTempContainers] = useState<ContainerProps[]>([]);
   const [containers, setContainers] = useState<ContainerProps[]>([]);
 
-  const updateTempContainers = useCallback(() => {
+  const updateContainers = useCallback(() => {
     const countString = count.toString();
     const countLength = countString.length;
     const tempContainers: ContainerProps[] = [];
+    const previousString = containerRefs.current
+      .map(
+        (item) =>
+          (item as MutableRefObject<HTMLDivElement>).current?.getAttribute(
+            "data-value"
+          ) ?? 0
+      )
+      .join("")
+      .padStart(countLength, "0");
 
-    for (let i = 0, l = countLength - 1; i <= l; i++) {
+    let previous: number, current: number, steps: number, content: number[];
+    for (let i = countLength - 1; i >= 0; i--) {
+      previous = Number(previousString[i]);
+      current = Number(countString[i]);
+      steps =
+        current >= previous ? current - previous : current + 10 - previous;
+      content = steps
+        ? Array(steps + 1)
+            .fill(0)
+            .map((_, i) => (previous + i) % 10)
+        : [previous];
+
       tempContainers.unshift({
-        value: Number(countString[l - i]),
-        content: [0],
+        steps,
+        content,
       });
-    }
-
-    setTempContainers(tempContainers);
-  }, [count]);
-
-  const updateContainers = useCallback(() => {
-    let difference: number, contentValue: number, tempContainer;
-    for (let i = 0, l = tempContainers.length - 1; i <= l; i++) {
-      tempContainer = tempContainers[i];
-      const { content, value } = tempContainer;
-      contentValue = content[content.length - 1];
-      difference = Math.abs(value - contentValue);
-
-      if (difference) {
-        tempContainer.content = Array(difference + 1)
-          .fill(0)
-          .map((_, index) => contentValue + index);
-      }
     }
 
     setContainers(tempContainers);
     containerRefs.current = Array(tempContainers.length)
       .fill(0)
       .map((_, i) => containerRefs.current[i] || createRef<HTMLDivElement>());
-  }, [tempContainers]);
+  }, [count]);
 
-  const scrollContainers = useCallback(() => {
-    let container, containerRef, containerRefElement;
-    for (let i = 0, l = containers.length - 1; i <= l; i++) {
-      container = containers[i];
-      containerRef = containerRefs.current[
+  const updateScrolling = useCallback(() => {
+    let animation: Keyframe[] | PropertyIndexedKeyframes | null,
+      animationTiming: number | KeyframeAnimationOptions,
+      previousItem: MutableRefObject<HTMLDivElement>,
+      previousItemValue: HTMLDivElement;
+    for (let i = containers.length - 1; i >= 0; i--) {
+      const { content, steps } = containers[i];
+      animation = [
+        { transform: "translateY(0px)" },
+        {
+          transform: `translateY(-${fontSize * steps}px)`,
+        },
+      ];
+      animationTiming = {
+        duration: 1000,
+        iterations: 1,
+        fill: "forwards",
+      };
+
+      previousItem = containerRefs.current[
         i
-      ] as React.MutableRefObject<HTMLDivElement>;
-      if (containerRef) {
-        containerRefElement = containerRef.current;
-        containerRefElement.scrollTo({
-          top: fontSize * container.value,
-          left: 0,
-          behavior: "smooth",
+      ] as MutableRefObject<HTMLDivElement>;
+      if (previousItem?.current) {
+        previousItemValue = previousItem.current;
+
+        previousItemValue.childNodes.forEach((itemNode) => {
+          (itemNode as HTMLDivElement)?.animate(animation, animationTiming);
         });
+
+        previousItemValue.setAttribute(
+          "data-value",
+          content[content.length - 1].toString()
+        );
       }
     }
   }, [containers, fontSize]);
 
   useEffect(() => {
-    updateTempContainers();
-  }, [updateTempContainers]);
+    updateScrolling();
+  }, [updateScrolling]);
 
   useEffect(() => {
     updateContainers();
   }, [updateContainers]);
-
-  useEffect(() => {
-    scrollContainers();
-  }, [scrollContainers]);
 
   return (
     <div className={"root"}>

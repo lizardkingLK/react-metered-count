@@ -1,6 +1,6 @@
 export type ContainerProps = {
   content: number[];
-  value: number;
+  steps: number;
 };
 
 export type ScrolledCountProps = {
