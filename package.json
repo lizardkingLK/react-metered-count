@@ -1,6 +1,6 @@
 {
   "name": "react-metered-count",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "type": "module",
   "main": "dist/index.cjs.js",
   "exports": "./dist/components/ScrolledCount/index.d.ts",
