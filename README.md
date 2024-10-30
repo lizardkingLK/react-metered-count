@@ -14,7 +14,7 @@ Install react-metered-count with npm
 
 ```javascript
 import React, { useEffect, useState } from "react";
-import ScrolledCount from "react-metered-count";
+import { ScrolledCount } from "react-metered-count";
 
 function App() {
   const [count, setCount] = useState(0);
