@@ -24,7 +24,7 @@ import { ContainerProps, ScrolledCountProps } from "./ScrolledCount.types";
  * @returns component to render
  *
  */
-export default function ScrolledCount({
+function ScrolledCount({
   count = 0,
   fontSize = 80,
   separator = ",",
@@ -150,3 +150,4 @@ export default function ScrolledCount({
   );
 }
 
+export default ScrolledCount;
