@@ -6,7 +6,6 @@ import {
   useRef,
   useState,
 } from "react";
-import "./ScrolledCount.styles.css";
 import {
   containerStyles,
   itemStyles,
@@ -116,29 +115,33 @@ function ScrolledCount({
   }, [updateContainers]);
 
   return (
-    <div className={"root"}>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        userSelect: "none",
+        overflowY: "hidden",
+        scrollbarWidth: "none",
+      }}
+    >
       {containers.map((container, index) => {
         const { content } = container;
 
         return (
-          <div className="compartment" key={index}>
+          <div style={{ display: "flex" }} key={index}>
             {index > 0 && (containers.length - index) % 3 === 0 && (
-              <div
-                key={`separator_${index}`}
-                className="separator"
-                style={separatorStyles(fontSize)}
-              >
+              <div key={`separator_${index}`} style={separatorStyles(fontSize)}>
                 {separator}
               </div>
             )}
             <div
               key={index}
-              className="container"
               style={containerStyles(fontSize)}
               ref={containerRefs.current[index]}
             >
               {content.map((value, index) => (
-                <div key={index} className="item" style={itemStyles(fontSize)}>
+                <div key={index} style={itemStyles(fontSize)}>
                   {value}
                 </div>
               ))}
